@@ -2,35 +2,18 @@ import { useState, useEffect } from "react";
 import CurrencyItem from "./CurrencyItem/CurrencyItem";
 import { Currency } from "../../types/currency.type";
 import s from "./Main.module.css";
+import PaginationList from "./PaginationList/PaginationList";
 
 // https://api.coincap.io/v2/assets?limit=5
 
 interface MainProps {
   value: Array<Currency>;
+  offset: number;
+  totalPages: number;
+  getCurrencyList: (data: number) => void;
 }
 
-function Main({ value }: MainProps) {
-  // const [coins, setCoins] = useState<Currency[]>([]);
-  const [limit, setLimit] = useState(5);
-
-  // useEffect(() => {
-  //   const fetchCoins = async () => {
-  //     const res = await fetch(
-  //       `https://api.coincap.io/v2/assets?limit=${limit}`
-  //     );
-  //     const data = await res.json();
-  //     console.log(data.data);
-  //     setCoins(data.data);
-  //   };
-
-  //   fetchCoins();
-  // }, [limit]);
-
-  const handleRefresh = () => {
-    setLimit(5);
-    window.scrollTo(0, 0);
-  };
-
+function Main({ value, offset, totalPages, getCurrencyList }: MainProps) {
   const [itemDataInModal, setItemDataInModal] = useState(null);
   const [currencyInModal, setCurrencyInModal] = useState(false);
 
@@ -42,7 +25,7 @@ function Main({ value }: MainProps) {
 
   return (
     <section className={s.main}>
-      <table>
+      <table className={s.table}>
         <thead className={s.thead}>
           <tr>
             <th>Rank</th>
@@ -57,13 +40,21 @@ function Main({ value }: MainProps) {
           ))}
         </tbody>
       </table>
-
-      <div className="buttons">
-        <button onClick={() => setLimit(limit + 5)}>Next</button>
-        <button onClick={handleRefresh}>Refresh</button>
-      </div>
+      <PaginationList totalPages={totalPages} getCurrencyList={getCurrencyList} />
     </section>
   );
 }
 
 export default Main;
+
+{
+  /* <div className="buttons">
+<button onClick={() => setLimit(limit + 5)}>Next</button>
+<button onClick={handleRefresh}>Refresh</button>
+</div> */
+}
+
+// const handleRefresh = () => {
+//   setLimit(5);
+//   window.scrollTo(0, 0);
+// };

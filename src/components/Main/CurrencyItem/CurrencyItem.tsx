@@ -1,4 +1,3 @@
-import { Interface } from "readline";
 import s from "./CurrencyItem.module.css";
 import { Currency } from "../../../types/currency.type";
 

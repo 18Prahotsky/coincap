@@ -1,28 +1,36 @@
 import { useState, useEffect } from "react";
-import CurrencyItem from "../Main/CurrencyItem/CurrencyItem";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Currency } from "../../types/currency.type";
 import Main from "../Main/Main";
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
 
-// https://api.coincap.io/v2/assets?limit=5
-
 function App() {
+  const maxTotalCoins = Number(2000); // Data from API Coins
   const [coins, setCoins] = useState<Currency[]>([]);
   const [limit, setLimit] = useState(10);
+
+  const [offset, setOffset] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const getCurrencyList = (numberPage: number) => {
+    setOffset(limit * (numberPage - 1));
+    setCurrentPage(numberPage);
+  };
 
   useEffect(() => {
     const fetchCoins = async () => {
       const res = await fetch(
-        `https://api.coincap.io/v2/assets?limit=${limit}`
+        `https://api.coincap.io/v2/assets?offset=${offset}&limit=${limit}`
       );
       const data = await res.json();
-      console.log(data.data);
       setCoins(data.data);
+      setTotalPages(maxTotalCoins / limit);
     };
-
     fetchCoins();
-  }, [limit]);
+  }, [offset, currentPage]);
 
   // const handleRefresh = () => {
   //   setLimit(5);
@@ -41,7 +49,29 @@ function App() {
   return (
     <>
       <Header />
-      <Main value={coins} />
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path={`/coinlist/${currentPage}`}
+            element={
+              <Main
+                value={coins}
+                offset={offset}
+                totalPages={totalPages}
+                getCurrencyList={getCurrencyList}
+              />
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+
+      {/* <Main
+            value={coins}
+            offset={offset}
+            totalPages={totalPages}
+            getCurrencyList={getCurrencyList}
+          /> */}
+
       <Footer />
     </>
   );
