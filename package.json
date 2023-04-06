@@ -10,7 +10,16 @@
     "@types/node": "^16.18.23",
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",
+    "@visx/event": "^3.0.1",
+    "@visx/gradient": "^3.0.0",
+    "@visx/grid": "^3.0.1",
+    "@visx/mock-data": "^3.0.0",
+    "@visx/responsive": "^3.0.0",
+    "@visx/shape": "^3.0.0",
+    "@visx/tooltip": "^3.1.2",
     "bootstrap": "^5.2.3",
+    "d3-array": "^2.4.0",
+    "d3-time-format": "2.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-responsive-pagination": "^2.1.0",
@@ -43,5 +52,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@storybook/preset-typescript": "^3.0.0",
+    "@types/d3-array": "^3.0.4",
+    "@types/d3-time-format": "^4.0.0"
   }
 }
