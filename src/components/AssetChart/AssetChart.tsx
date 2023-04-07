@@ -1,83 +1,59 @@
-import { useState, useEffect, useMemo } from "react";
-
-import { Currency } from "../../types/currency.type";
+import { useState, useEffect } from "react";
+import { Coin } from "../../types/coin.type";
 import s from "./AssetChart.module.css";
-
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  useSearchParams,
-} from "react-router-dom";
-
-
-
+import { ParentSize } from "@visx/responsive";
+import Diagram from "../Diagram/Diagram";
+import { useParams } from "react-router-dom";
 
 function AssetChart() {
-//   const [searchParams] = useSearchParams();
-  const [coinStock, setCoinStock] = useState<Currency[]>([]);
+  let { coinId } = useParams();
 
-console.log(coinStock)
-//   const currentPage = useMemo(() => {
-//     return Number(searchParams.get("page") ?? 1);
-//   }, [searchParams]);
+  const [coin, setCoin] = useState<Coin | null>(null);
 
-
-
-
-//   const openModal = (item: any) => {
-//   // setItemDataInModal(item);
-//   console.log(item);
-//   // setCurrencyInModal(true);
-// };
-
-let requestOptions = {
-    method: 'GET',
-    redirect: 'follow'
+  const fetchCoin = async () => {
+    try {
+      const res = await fetch(`https://api.coincap.io/v2/assets/${coinId}`);
+      const result: any = await res.json();
+      setCoin(result.data as Coin);
+    } catch (error) {
+      console.log(error);
+    }
   };
-  
+
   useEffect(() => {
-    fetch("https://api.coincap.io/v2/assets/bitcoin/history?interval=d1", {
-        method: 'GET',
-        redirect: 'follow',
-      })
-        .then(response => response.json())
-        .then(result => setCoinStock(result.data))
-        .catch(error => console.log('error', error));
-  
-    
-  }, [])
+    fetchCoin();
+  }, [coinId]);
 
-  
-
-//   useEffect(() => {
-//     const fetchCoins = async () => {
-//         // const offset = getOffset(currentPage);
-//         const res = await fetch(
-//           `https://api.coincap.io/v2/assets`
-//         );
-//         const data = await res.json();
-//         console.log(data.data);
-//       };
-//       fetchCoins();
-//   }, []);
+  if (coin === null) return null;
 
   return (
-    <section className={s.main}>
-      <table className={s.table}>
-        <thead className={s.thead}>
-          <tr>
-            <th>Rank</th>
-            <th>Name</th>
-            <th>Symbol</th>
-            <th>Price (USD)</th>
-          </tr>
-        </thead>
-        <tbody className={s.tbody}>
-        
-        </tbody>
-      </table>
-    
+    <section className={s.section}>
+      <div className={s.description}>
+        <div className={s.block}>
+          <h2 className={s.name}>{coin.name}</h2>
+        </div>
+        <div className={s.block}>
+          <p className={s.text}>Rank</p>
+          <div className={s.number}>{coin.rank}</div>
+        </div>
+        <div className={s.block}>
+          <p className={s.text}>PriceUSD</p>
+          <div className={s.number}>{`${Number(coin.priceUsd).toFixed(2)} $`}</div>
+        </div>
+        <div className={s.block}>
+          <p className={s.text}>Average</p>
+          <div className={s.number}>{`${Number(coin.vwap24Hr).toFixed(2)} $`}</div>
+        </div>
+        <div className={s.block}>
+          <p className={s.text}>Price change in 24 hours</p>
+          <div className={s.number}>
+            {`${Number(coin.changePercent24Hr).toFixed(2)} %`}
+          </div>
+        </div>
+      </div>
+      <ParentSize className={s.parentSize}>
+        {(parent) => <Diagram width={parent.width} height={500} id={coinId} />}
+      </ParentSize>
     </section>
   );
 }

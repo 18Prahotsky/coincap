@@ -1,23 +1,24 @@
-import { useState, useEffect, useMemo } from "react";
-import CurrencyItem from "./CurrencyItem/CurrencyItem";
-import { Currency } from "../../types/currency.type";
+import {
+  useState,
+  useEffect,
+  useMemo,
+  MouseEventHandler,
+  MouseEvent,
+} from "react";
+import CoinRow from "./CoinRow/CoinRow";
+import { Coin } from "../../types/coin.type";
 import s from "./Main.module.css";
 import Pagination from "./Pagination/Pagination";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  useSearchParams,
-} from "react-router-dom";
-
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 const COINS_TOTAL = 2000; // Data from Coincap API
 const LIMIT = 10;
 const PAGES_TOTAL = COINS_TOTAL / LIMIT;
 
 function Main() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [coins, setCoins] = useState<Currency[]>([]);
+  const [coins, setCoins] = useState<Coin[]>([]);
 
   const getOffset = (page: number) => {
     return LIMIT * (page - 1);
@@ -27,24 +28,29 @@ function Main() {
     return Number(searchParams.get("page") ?? 1);
   }, [searchParams]);
 
+  const onCoinClick = (e: MouseEvent) => {
+    if (e.currentTarget instanceof HTMLElement) {
+      const coinId = e.currentTarget.dataset.id;
+      if (coinId) {
+        navigate(coinId);
+      }
+    }
+  };
 
-
-
-  const openModal = (item: any) => {
-  // setItemDataInModal(item);
-  console.log(item);
-  // setCurrencyInModal(true);
-};
-
-  useEffect(() => {
-    const fetchCoins = async () => {
-      const offset = getOffset(currentPage);
+  const fetchCoins = async () => {
+    const offset = getOffset(currentPage);
+    try {
       const res = await fetch(
         `https://api.coincap.io/v2/assets?offset=${offset}&limit=${LIMIT}`
       );
-      const data = await res.json();
-      setCoins(data.data);
-    };
+      const result = await res.json();
+      setCoins(result.data as Coin[]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
     fetchCoins();
   }, [searchParams]);
 
@@ -60,37 +66,14 @@ function Main() {
           </tr>
         </thead>
         <tbody className={s.tbody}>
-          {coins.map((dataItem) => (
-            <CurrencyItem
-              key={dataItem.id}
-              data={dataItem}
-              onClickItem={openModal}
-            />
+          {coins.map((coin) => (
+            <CoinRow key={coin.id} coin={coin} onCoinClick={onCoinClick} />
           ))}
         </tbody>
       </table>
       <Pagination currentPage={currentPage} totalPages={PAGES_TOTAL} />
-
-      
     </section>
   );
 }
 
 export default Main;
-
-// const [itemDataInModal, setItemDataInModal] = useState(null);
-// const [currencyInModal, setCurrencyInModal] = useState(false);
-
-{
-  /* <div className="buttons">
-<button onClick={() => setLimit(limit + 5)}>Next</button>
-<button onClick={handleRefresh}>Refresh</button>
-</div> */
-}
-
-// const handleRefresh = () => {
-//   setLimit(5);
-//   window.scrollTo(0, 0);
-// };
-
-

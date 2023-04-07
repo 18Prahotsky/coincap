@@ -1,6 +1,5 @@
 import React, { useMemo, useCallback, useEffect, useState } from "react";
 import { AreaClosed, Line, Bar } from "@visx/shape";
-import appleStock, { AppleStock } from "@visx/mock-data/lib/mocks/appleStock";
 import { curveMonotoneX } from "@visx/curve";
 import { GridRows, GridColumns } from "@visx/grid";
 import { scaleTime, scaleLinear } from "@visx/scale";
@@ -15,12 +14,10 @@ import { localPoint } from "@visx/event";
 import { LinearGradient } from "@visx/gradient";
 import { max, extent, bisector } from "d3-array";
 import { timeFormat } from "d3-time-format";
-import { Stock } from "../../types/stock.type";
-import { Currency } from "../../types/currency.type";
+import { CoinHistory } from "../../types/coinHistory.type";
 
-// type TooltipData = AppleStock;
-type TooltipData = Stock;
-// const stock = appleStock.slice(800);
+type TooltipData = CoinHistory;
+
 export const background = "#3b6978";
 export const background2 = "#204051";
 export const accentColor = "#edffea";
@@ -32,18 +29,13 @@ const tooltipStyles = {
   color: "white",
 };
 
-// util
 const formatDate = timeFormat("%b %d, '%y");
-
-// accessors
-// const getDate = (d: AppleStock) => new Date(d.date);
-// const getStockValue = (d: AppleStock) => d.close;
-// const bisectDate = bisector<AppleStock, Date>((d) => new Date(d.date)).left;
 
 export type AreaProps = {
   width: number;
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
+  id?: string;
 };
 
 export default withTooltip<AreaProps, TooltipData>(
@@ -56,35 +48,37 @@ export default withTooltip<AreaProps, TooltipData>(
     tooltipData,
     tooltipTop = 0,
     tooltipLeft = 0,
+    id,
   }: AreaProps & WithTooltipProvidedProps<TooltipData>) => {
-    if (width < 10) return null;
+    const [stock, setStock] = useState<CoinHistory[]>([]);
 
-    // bounds
+    const fetchCoinHistory = async () => {
+      try {
+        const res = await fetch(
+          `https://api.coincap.io/v2/assets/${id}/history?interval=d1`
+        );
+        const result: any = await res.json();
+        setStock(result.data as CoinHistory[]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    useEffect(() => {
+      fetchCoinHistory();
+    }, [id]);
+
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
-    
+    const getDate = (coinHistoryItem: CoinHistory) =>
+      new Date(coinHistoryItem.date);
+    const getPrice = (coinHistoryItem: CoinHistory) =>
+      +coinHistoryItem?.priceUsd;
+    const bisectDate = bisector<CoinHistory, Date>(
+      (d) => new Date(d.date)
+    ).left;
 
-    const [stock, setStock] = useState([]);
-    useEffect(() => {
-      fetch("https://api.coincap.io/v2/assets/bitcoin/history?interval=d1", {
-        method: "GET",
-        redirect: "follow",
-      })
-        .then((response) => response.json())
-        .then((result) => setStock(result.data))
-        .catch((error) => console.log("error", error));
-    }, []);
-
-     console.log("stock", stock);
-
-    const getDate = (d: Stock) => new Date(d.date);
-    const getStockValue = (d: Stock) => +d.priceUsd;
-    const bisectDate = bisector<Stock, Date>((d) => new Date(d.date)).left;
-
-   
-
-    // scales
     const dateScale = useMemo(
       () =>
         scaleTime({
@@ -97,13 +91,12 @@ export default withTooltip<AreaProps, TooltipData>(
       () =>
         scaleLinear({
           range: [innerHeight + margin.top, margin.top],
-          domain: [0, (max(stock, getStockValue) || 0) + innerHeight / 3],
+          domain: [0, max(stock, getPrice) || 0],
           nice: true,
         }),
       [margin.top, innerHeight, stock]
     );
 
-    // tooltip handler
     const handleTooltip = useCallback(
       (
         event:
@@ -126,11 +119,12 @@ export default withTooltip<AreaProps, TooltipData>(
         showTooltip({
           tooltipData: d,
           tooltipLeft: x,
-          tooltipTop: stockValueScale(getStockValue(d)),
+          tooltipTop: stockValueScale(getPrice(d)),
         });
       },
       [showTooltip, stockValueScale, dateScale]
     );
+    if (width < 10) return null;
 
     return (
       <div>
@@ -172,11 +166,11 @@ export default withTooltip<AreaProps, TooltipData>(
             strokeOpacity={0.2}
             pointerEvents="none"
           />
-          {/* <AreaClosed<AppleStock> */}
-          <AreaClosed<Stock>
+
+          <AreaClosed<CoinHistory>
             data={stock}
             x={(d) => dateScale(getDate(d)) ?? 0}
-            y={(d) => stockValueScale(getStockValue(d)) ?? 0}
+            y={(d) => stockValueScale(getPrice(d)) ?? 0}
             yScale={stockValueScale}
             strokeWidth={1}
             stroke="url(#area-gradient)"
@@ -236,7 +230,7 @@ export default withTooltip<AreaProps, TooltipData>(
               left={tooltipLeft + 12}
               style={tooltipStyles}
             >
-              {`$${getStockValue(tooltipData)}`}
+              {`$${getPrice(tooltipData)}`}
             </TooltipWithBounds>
             <Tooltip
               top={innerHeight + margin.top - 14}

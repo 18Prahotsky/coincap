@@ -1,49 +1,77 @@
-.main {
-    border: 1px solid rgb(207, 234, 255);
-    background-color: rgb(215, 235, 250);
-    border-radius: 13px;
-    margin: 10px auto 20px;
-    max-width: 1440px;
-    min-width: fit-content;
+.section {
+  border: 1px solid rgb(207, 234, 255);
+  background-color: rgb(215, 235, 250);
+  border-radius: 13px;
+  margin: 10px auto 20px;
+  max-width: 1440px;
+  height: fit-content;
+  min-width: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.description {
+  display: grid;
+  margin: 10px;
+  gap: 10px;
+  grid-template-columns: auto auto auto auto auto;
+}
+
+.block {
+  border: 1px solid rgb(207, 234, 255);
+  background-color: rgb(186, 222, 250);
+  border-radius: 13px;
+  padding: 10px;
+  text-align: center;
+}
+
+.name {
+  margin: 10px;
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+  font-size: 72px;
+  font-weight: lighter;
+}
+
+.text {
+  margin: 10px;
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+  font-size: 150%;
+  font-weight: lighter;
+}
+
+.number {
+  margin: 10px;
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+  font-size: 120%;
+  font-weight: lighter;
+}
+
+@media (max-width: 1460px) {
+  .section {
+    margin: 10px 10px 20px;
+  }
+}
+
+.parentSize {
+  margin: 0 auto 0;
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .description {
     display: flex;
     flex-direction: column;
   }
-  
-  .thead {
-    font-family: Arial, Helvetica, Verdana, sans-serif;
-    font-size: 150%;
-    font-weight: lighter;
-    border: 2px solid rgba(0, 0, 0, 0.501);
-  }
-  
-  .tbody {
-    font-family: Arial, Helvetica, Verdana, sans-serif;
-    font-size: 100%;
-    font-weight: lighter;
-  }
-  
+}
+
+@media (max-width: 425px) {
   .name {
-    font-family: Arial, Helvetica, Verdana, sans-serif;
-    font-size: 150%;
-    font-weight: lighter;
+    font-size: 48px;
   }
-  
-  .table {
-    margin: 18px;
-    border: 2px solid rgba(0, 0, 0, 0.501);
-    background-color: rgb(249, 252, 255);
+  .text {
+    font-size: 120%;
   }
-  
-  .thead tr th {
-    text-align: center;
-    border: 1px solid rgba(0, 0, 0, 0.501);
+  .number {
+    font-size: 100%;
   }
-  
-  
-  @media (max-width: 1460px) {
-    .main{
-      margin: 10px 10px 20px;
-    }
-   
-  }
-  
+}

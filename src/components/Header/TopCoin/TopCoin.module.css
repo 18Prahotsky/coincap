@@ -1,0 +1,23 @@
+.topCoin {
+  display: flex;
+  border: 1px solid rgb(110, 192, 255);
+  /* background-color: rgb(201, 231, 253); */
+  border-radius: 13px;
+  padding: 10px;
+  text-align: center;
+  margin: 10px;
+  flex-direction: column;
+}
+
+.name {
+  text-align: left;
+  margin: 0;
+}
+
+.block {
+  height: fit-content;
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  gap: 10px;
+}
