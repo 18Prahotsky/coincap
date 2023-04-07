@@ -1,6 +1,7 @@
 {
   "name": "coincap",
   "version": "0.1.0",
+  "homepage": "https://18prahotsky.github.io/coincap/",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -30,6 +31,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "PUBLIC_URL=/coinlist react-scripts start",
     "build": "PUBLIC_URL=/coinlist react-scripts build",
     "test": "react-scripts test",
@@ -56,6 +59,7 @@
   "devDependencies": {
     "@storybook/preset-typescript": "^3.0.0",
     "@types/d3-array": "^3.0.4",
-    "@types/d3-time-format": "^4.0.0"
+    "@types/d3-time-format": "^4.0.0",
+    "gh-pages": "^5.0.0"
   }
 }
