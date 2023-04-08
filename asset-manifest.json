@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/coincap/static/css/main.15940d20.css",
-    "main.js": "/coincap/static/js/main.abe0de9d.js",
-    "static/js/787.8cd0aabc.chunk.js": "/coincap/static/js/787.8cd0aabc.chunk.js",
-    "static/media/logo.svg": "/coincap/static/media/logo.eb9cc7ac7dbeca6e488f272ef066db3c.svg",
-    "index.html": "/coincap/index.html",
-    "main.15940d20.css.map": "/coincap/static/css/main.15940d20.css.map",
-    "main.abe0de9d.js.map": "/coincap/static/js/main.abe0de9d.js.map",
-    "787.8cd0aabc.chunk.js.map": "/coincap/static/js/787.8cd0aabc.chunk.js.map"
+    "main.css": "/coinlist/index.html/static/css/main.15940d20.css",
+    "main.js": "/coinlist/index.html/static/js/main.821fc764.js",
+    "static/js/787.8cd0aabc.chunk.js": "/coinlist/index.html/static/js/787.8cd0aabc.chunk.js",
+    "static/media/logo.svg": "/coinlist/index.html/static/media/logo.eb9cc7ac7dbeca6e488f272ef066db3c.svg",
+    "index.html": "/coinlist/index.html/index.html",
+    "main.15940d20.css.map": "/coinlist/index.html/static/css/main.15940d20.css.map",
+    "main.821fc764.js.map": "/coinlist/index.html/static/js/main.821fc764.js.map",
+    "787.8cd0aabc.chunk.js.map": "/coinlist/index.html/static/js/787.8cd0aabc.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.15940d20.css",
-    "static/js/main.abe0de9d.js"
+    "static/js/main.821fc764.js"
   ]
 }
