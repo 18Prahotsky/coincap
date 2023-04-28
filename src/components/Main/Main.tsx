@@ -1,15 +1,10 @@
-import {
-  useState,
-  useEffect,
-  useMemo,
-  MouseEventHandler,
-  MouseEvent,
-} from "react";
+import { useState, useEffect, useMemo, MouseEvent } from "react";
 import CoinRow from "./CoinRow/CoinRow";
 import { Coin } from "../../types/coin.type";
-import s from "./Main.module.css";
+import s from "./Main.module.scss";
 import Pagination from "./Pagination/Pagination";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import axiosInstance from "../../httpClient";
 
 const COINS_TOTAL = 2000; // Data from Coincap API
 const LIMIT = 10;
@@ -40,10 +35,8 @@ function Main() {
   const fetchCoins = async () => {
     const offset = getOffset(currentPage);
     try {
-      const res = await fetch(
-        `https://api.coincap.io/v2/assets?offset=${offset}&limit=${LIMIT}`
-      );
-      const result = await res.json();
+      const res = await axiosInstance(`assets?offset=${offset}&limit=${LIMIT}`);
+      const result = await res.data;
       setCoins(result.data as Coin[]);
     } catch (error) {
       console.log(error);

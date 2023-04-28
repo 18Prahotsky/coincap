@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Coin } from "../../types/coin.type";
-import s from "./AssetChart.module.css";
+import s from "./AssetChart.module.scss";
 import { ParentSize } from "@visx/responsive";
 import Diagram from "../Diagram/Diagram";
 import { useParams } from "react-router-dom";
+import axiosInstance from "../../httpClient";
 
 function AssetChart() {
   let { coinId } = useParams();
@@ -12,11 +13,11 @@ function AssetChart() {
 
   const fetchCoin = async () => {
     try {
-      const res = await fetch(`https://api.coincap.io/v2/assets/${coinId}`);
-      const result: any = await res.json();
+      const res = await axiosInstance.get(`assets/${coinId}`);
+      const result: any = await res.data;
       setCoin(result.data as Coin);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -38,11 +39,15 @@ function AssetChart() {
         </div>
         <div className={s.block}>
           <p className={s.text}>PriceUSD</p>
-          <div className={s.number}>{`${Number(coin.priceUsd).toFixed(2)} $`}</div>
+          <div className={s.number}>{`${Number(coin.priceUsd).toFixed(
+            2
+          )} $`}</div>
         </div>
         <div className={s.block}>
           <p className={s.text}>Average</p>
-          <div className={s.number}>{`${Number(coin.vwap24Hr).toFixed(2)} $`}</div>
+          <div className={s.number}>{`${Number(coin.vwap24Hr).toFixed(
+            2
+          )} $`}</div>
         </div>
         <div className={s.block}>
           <p className={s.text}>Price change in 24 hours</p>

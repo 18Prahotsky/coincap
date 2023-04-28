@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Main from "../Main/Main";
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
@@ -8,10 +8,10 @@ function App() {
   return (
     <>
       <Header />
-      <BrowserRouter>
+      <BrowserRouter basename="/coincap">
         <Routes>
-          <Route path={`/coinlist`} element={<Main />} />
-          <Route path="/coinlist/:coinId" element={<AssetChart />} />
+          <Route path={"/"} element={<Main />} />
+          <Route path="/:coinId" element={<AssetChart />} />
         </Routes>
       </BrowserRouter>
       <Footer />

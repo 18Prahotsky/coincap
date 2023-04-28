@@ -1,0 +1,26 @@
+$font-family: Arial, Helvetica, Verdana, sans-serif;
+$color-footer-border: rgb(207, 234, 255);
+$color-footer-background: rgb(215, 235, 250);
+$color-footer-text: #000000;
+
+.footer {
+  border: 1px solid $color-footer-border;
+  background-color: $color-footer-background;
+  border-radius: 13px;
+  margin: 10px auto 20px;
+  max-width: 1440px;
+  display: flex;
+  justify-content: left;
+
+  .name {
+    margin: 13px;
+    font-family: $font-family;
+    font-size: 150%;
+    font-weight: lighter;
+    color: $color-footer-text;
+  }
+
+  @media (max-width: 1460px) {
+    margin: 10px;
+  }
+}

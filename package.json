@@ -18,14 +18,15 @@
     "@visx/responsive": "^3.0.0",
     "@visx/shape": "^3.0.0",
     "@visx/tooltip": "^3.1.2",
+    "axios": "^1.4.0",
     "bootstrap": "^5.2.3",
     "d3-array": "^2.4.0",
     "d3-time-format": "2.2.3",
+    "dotenv": "^16.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-responsive-pagination": "^2.1.0",
     "react-router-dom": "^6.10.0",
-    "react-scripts": "5.0.1",
     "typescript": "^4.9.5",
     "use-route-matching": "^0.0.1",
     "web-vitals": "^2.1.4"
@@ -33,8 +34,8 @@
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "start": "PUBLIC_URL=/coinlist react-scripts start",
-    "build": "PUBLIC_URL=/coinlist react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -60,6 +61,8 @@
     "@storybook/preset-typescript": "^3.0.0",
     "@types/d3-array": "^3.0.4",
     "@types/d3-time-format": "^4.0.0",
-    "gh-pages": "^5.0.0"
+    "gh-pages": "^5.0.0",
+    "node-sass": "^7.0.3",
+    "react-scripts": "^5.0.1"
   }
 }

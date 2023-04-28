@@ -1,0 +1,17 @@
+.coinRowBlock {
+  td {
+    margin: 0 auto 0;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.501);
+  }
+  
+  &:hover {
+    background-color: aliceblue;
+    transition: all 50ms ease;
+  }
+  
+  &:active {
+    background-color: rgb(178, 218, 253);
+    transition: all 50ms ease;
+  }
+}
