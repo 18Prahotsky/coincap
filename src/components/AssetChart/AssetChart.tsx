@@ -5,11 +5,23 @@ import { ParentSize } from "@visx/responsive";
 import Diagram from "../Diagram/Diagram";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../httpClient";
+import Modal from "../Modal/Modal";
+import CoinForm from "../CoinForm/CoinForm";
 
 function AssetChart() {
   let { coinId } = useParams();
 
   const [coin, setCoin] = useState<Coin | null>(null);
+
+  const [formInModal, setFormInModal] = useState(false);
+
+  const openModal = () => {
+    setFormInModal(true);
+  };
+
+  const closeModal = () => {
+    setFormInModal(false);
+  };
 
   const fetchCoin = async () => {
     try {
@@ -55,10 +67,24 @@ function AssetChart() {
             {`${Number(coin.changePercent24Hr).toFixed(2)} %`}
           </div>
         </div>
+        <div className={s.block} onClick={openModal}>
+          <p className={s.text}>Add to portfolio</p>
+        </div>
       </div>
       <ParentSize className={s.parentSize}>
         {(parent) => <Diagram width={parent.width} height={500} id={coinId} />}
       </ParentSize>
+      {formInModal && (
+        <Modal
+          description={`Amount of ${coin.name} (${coin.symbol})`}
+          onClose={closeModal}
+        >
+          <CoinForm
+            coin={coin}
+            onAddCoin={(id, amount) => console.log(id, amount)}
+          />
+        </Modal>
+      )}
     </section>
   );
 }

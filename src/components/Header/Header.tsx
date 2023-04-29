@@ -1,5 +1,5 @@
 import s from "./Header.module.scss";
-import logo from "../../logo.svg";
+import logo from "../../images/logo.svg";
 import { Coin } from "../../types/coin.type";
 import { useEffect, useState } from "react";
 import TopCoin from "./TopCoin/TopCoin";

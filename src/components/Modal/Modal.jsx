@@ -1,10 +1,8 @@
-import s from "./Modal.module.css";
+import s from "./Modal.module.scss";
 import ReactDOM from "react-dom";
-import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
-import "@ya.praktikum/react-developer-burger-ui-components";
 import ModalOverlay from "../ModalOverlay/ModalOverlay";
 import { useEffect } from "react";
-import PropTypes from "prop-types";
+import closeIcon from "../../images/iconClose.svg";
 
 const modalRoot = document.getElementById("modals");
 
@@ -23,11 +21,9 @@ const Modal = ({ description, onClose, children }) => {
     <>
       <div className={s.modal}>
         <div className={s.header}>
-          <h3 className={`${s.title} text text_type_main-large`}>
-            {description}
-          </h3>
-          <button className={s.button}>
-            <CloseIcon type="primary" onClick={onClose} />
+          <h3 className={s.title}>{description}</h3>
+          <button className={s.button} onClick={onClose}>
+            <img src={closeIcon} alt="close" className={s.closeIcon} />
           </button>
         </div>
         <div className={s.content}>{children}</div>
@@ -39,9 +35,3 @@ const Modal = ({ description, onClose, children }) => {
 };
 
 export default Modal;
-
-Modal.propTypes = {
-  children: PropTypes.element.isRequired,
-  onClose: PropTypes.func.isRequired,
-  description: PropTypes.string,
-};

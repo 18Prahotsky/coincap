@@ -9,11 +9,12 @@ interface Props {
 
 const CoinRow = ({ coin, onCoinClick }: Props) => {
   return (
-    <tr className={s.coinRowBlock} data-id={coin.id} onClick={onCoinClick} >
+    <tr className={s.coinRowBlock} data-id={coin.id} onClick={onCoinClick}>
       <td>{coin.rank}</td>
       <td>{coin.name}</td>
       <td>{coin.symbol}</td>
       <td>{Number(coin.priceUsd).toFixed(2)}</td>
+      <td>add</td>
     </tr>
   );
 };

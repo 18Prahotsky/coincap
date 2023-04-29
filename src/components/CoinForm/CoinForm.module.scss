@@ -1,0 +1,39 @@
+$form-bg-color: #ccc;
+$form-primary-color: #0077ff;
+
+.form {
+  display: flex;
+  flex-direction: column;
+
+  .input {
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid $form-bg-color;
+    border-radius: 4px;
+    font-size: 16px;
+
+    &:focus {
+      border-color: $form-primary-color;
+      box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.2);
+    }
+  }
+
+  .button {
+    margin-top: 16px;
+    padding: 8px 16px;
+    background-color: $form-primary-color;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: darken($form-primary-color, 10%);
+    }
+
+    &:active {
+      background-color: darken($form-primary-color, 20%);
+    }
+  }
+}
