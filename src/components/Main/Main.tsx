@@ -35,9 +35,10 @@ function Main() {
   const fetchCoins = async () => {
     const offset = getOffset(currentPage);
     try {
-      const res = await axiosInstance(`assets?offset=${offset}&limit=${LIMIT}`);
-      const result = await res.data;
-      setCoins(result.data as Coin[]);
+      const res = await axiosInstance(
+        `/assets?offset=${offset}&limit=${LIMIT}`
+      );
+      setCoins(res.data.data as Coin[]);
     } catch (error) {
       console.log(error);
     }

@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import { Coin } from "../../types/coin.type";
-import s from './CoinForm.module.scss'
+import s from "./CoinForm.module.scss";
 
 type Props = {
   coin: Coin;
-  onAddCoin: (coinId: string, amount: number) => void;
+  onAddCoin: (
+    id: string,
+    name: string,
+    symbol: string,
+    priceUsd: string,
+    amount: number
+  ) => void;
 };
 
 const CoinForm: React.FC<Props> = ({ coin, onAddCoin }) => {
@@ -13,7 +19,7 @@ const CoinForm: React.FC<Props> = ({ coin, onAddCoin }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (typeof amount === "number" && amount > 0) {
-      onAddCoin(coin.id, amount);
+      onAddCoin(coin.id, coin.name, coin.symbol, coin.priceUsd, amount);
       setAmount("");
     }
   };
@@ -34,7 +40,9 @@ const CoinForm: React.FC<Props> = ({ coin, onAddCoin }) => {
         value={amount}
         onChange={handleAmountChange}
       />
-      <button className={s.button} type="submit">Add to portfolio</button>
+      <button className={s.button} type="submit">
+        Add to portfolio
+      </button>
     </form>
   );
 };

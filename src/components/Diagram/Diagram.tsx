@@ -17,7 +17,6 @@ import { timeFormat } from "d3-time-format";
 import { CoinHistory } from "../../types/coinHistory.type";
 import axiosInstance from "../../httpClient";
 
-
 type TooltipData = CoinHistory;
 
 export const background = "#3b6978";
@@ -56,9 +55,10 @@ export default withTooltip<AreaProps, TooltipData>(
 
     const fetchCoinHistory = async () => {
       try {
-        const res = await axiosInstance.get(`assets/${id}/history?interval=d1`);
-        const result: any = await res.data;
-        setStock(result.data as CoinHistory[]);
+        const res = await axiosInstance.get(
+          `/assets/${id}/history?interval=d1`
+        );
+        setStock(res.data.data as CoinHistory[]);
       } catch (error) {
         console.log(error);
       }
@@ -89,11 +89,11 @@ export default withTooltip<AreaProps, TooltipData>(
     );
     const stockValueScale = useMemo(
       () =>
-      scaleLinear({
-        range: [innerHeight + margin.top, margin.top],
-        domain: [0, max(stock, getPrice) || 0],
-        nice: true,
-      }),
+        scaleLinear({
+          range: [innerHeight + margin.top, margin.top],
+          domain: [0, max(stock, getPrice) || 0],
+          nice: true,
+        }),
       [margin.top, innerHeight, stock]
     );
 

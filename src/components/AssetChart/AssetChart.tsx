@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import axiosInstance from "../../httpClient";
 import Modal from "../Modal/Modal";
 import CoinForm from "../CoinForm/CoinForm";
+import { LocalStorageCoin } from "../../types/coin.type";
 
 function AssetChart() {
   let { coinId } = useParams();
@@ -23,11 +24,49 @@ function AssetChart() {
     setFormInModal(false);
   };
 
+  const onAddCoin = (
+    id: string,
+    name: string,
+    symbol: string,
+    priceUsd: string,
+    amount: number
+  ) => {
+    const localPortfolio = localStorage.getItem("portfolio");
+
+    let newPortfolio: LocalStorageCoin[] = [];
+
+    if (localPortfolio) {
+      const parsedPortfolio = JSON.parse(localPortfolio);
+      newPortfolio = [
+        ...parsedPortfolio,
+        {
+          id: id,
+          name: name,
+          amount: amount,
+          symbol: symbol,
+          priceUsd: priceUsd,
+        },
+      ];
+    } else {
+      newPortfolio = [
+        {
+          id: id,
+          name: name,
+          amount: amount,
+          symbol: symbol,
+          priceUsd: priceUsd,
+        },
+      ];
+    }
+
+    localStorage.setItem("portfolio", JSON.stringify(newPortfolio));
+    closeModal();
+  };
+
   const fetchCoin = async () => {
     try {
-      const res = await axiosInstance.get(`assets/${coinId}`);
-      const result: any = await res.data;
-      setCoin(result.data as Coin);
+      const res = await axiosInstance.get(`/assets/${coinId}`);
+      setCoin(res.data.data as Coin);
     } catch (error) {
       console.error(error);
     }
@@ -79,10 +118,7 @@ function AssetChart() {
           description={`Amount of ${coin.name} (${coin.symbol})`}
           onClose={closeModal}
         >
-          <CoinForm
-            coin={coin}
-            onAddCoin={(id, amount) => console.log(id, amount)}
-          />
+          <CoinForm coin={coin} onAddCoin={onAddCoin} />
         </Modal>
       )}
     </section>

@@ -7,3 +7,11 @@ export interface Coin {
   vwap24Hr: string;
   changePercent24Hr: string;
 }
+
+export interface LocalStorageCoin {
+  id: string;
+  amount: number;
+  symbol: string;
+  priceUsd: string;
+  name: string;
+}
