@@ -14,7 +14,6 @@ const CoinRow = ({ coin, onCoinClick }: Props) => {
       <td>{coin.name}</td>
       <td>{coin.symbol}</td>
       <td>{Number(coin.priceUsd).toFixed(2)}</td>
-      <td>add</td>
     </tr>
   );
 };

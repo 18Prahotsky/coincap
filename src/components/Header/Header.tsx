@@ -49,11 +49,8 @@ function Header() {
         <img src={portfolio} className={`${s.portfolioIcon}`} alt="logo" />
       </button>
       {formInModal && (
-        <Modal
-          description={`Portfolio`}
-          onClose={closeModal}
-        >
-       <Portfolio/>
+        <Modal description={`Portfolio`} onClose={closeModal}>
+          <Portfolio />
         </Modal>
       )}
     </header>

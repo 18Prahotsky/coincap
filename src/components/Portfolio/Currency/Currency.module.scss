@@ -1,0 +1,22 @@
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  .name {
+    font-weight: bold;
+  }
+  .price {
+    color: #555;
+  }
+  .delete {
+    color: red;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

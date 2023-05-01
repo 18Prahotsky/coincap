@@ -15,3 +15,12 @@ export interface LocalStorageCoin {
   priceUsd: string;
   name: string;
 }
+
+export interface Totals {
+  id: string;
+  amount: number;
+  symbol: string;
+  priceUsd: string;
+  name: string;
+  totalPriceUsd: number;
+}
