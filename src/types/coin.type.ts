@@ -16,7 +16,7 @@ export interface LocalStorageCoin {
   name: string;
 }
 
-export interface Totals {
+export interface CoinTotal {
   id: string;
   amount: number;
   symbol: string;

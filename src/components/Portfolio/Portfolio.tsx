@@ -1,100 +1,101 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import s from "./Portfolio.module.scss";
 import Currency from "./Currency/Currency";
-import { LocalStorageCoin, Totals } from "../../types/coin.type";
-import axiosInstance from "../../httpClient";
+import { LocalStorageCoin, CoinTotal, Coin } from "../../types/coin.type";
 
 const Portfolio: React.FC = () => {
-  const [currencies, setCurrencies] = useState<LocalStorageCoin[]>([]);
-  const [currenciesAfterDelete, setCurrenciesAfterDelete] = useState<
-    LocalStorageCoin[]
-  >([]);
-  const [portfolioValue, setPortfolioValue] = useState(0);
-  const [currencyLocalStorage, setCurrencyLocalStorage] = useState<Totals[]>(
-    []
-  );
-  const [apiPortfolioValue, setApiPortfolioValue] = useState(0);
-  const [portfolioChange, setPortfolioChange] = useState(0);
+  const [coins, setCoins] = useState<LocalStorageCoin[]>([]);
+  const [portfolioTotal, setPortfolioTotal] = useState(0);
 
-  const calculatePortfolioValue = (currencies: LocalStorageCoin[]) => {
-    const totalValue = currencies.reduce((sum, currency) => {
+  const [groupedCoins, setGroupedCoins] = useState<CoinTotal[]>([]);
+  const [apiPortfolioTotal, setApiPortfolioTotal] = useState(0);
+
+  const calculatePortfolioTotal = (coins: LocalStorageCoin[]) => {
+    const totalValue = coins.reduce((sum, currency) => {
       return sum + currency.amount * Number(currency.priceUsd);
     }, 0);
     return totalValue;
   };
 
   useEffect(() => {
+    getStorageCoins();
+  }, []);
+
+  const getStorageCoins = () => {
     const storedCurrencies = localStorage.getItem("portfolio");
     if (storedCurrencies) {
-      setCurrencies(JSON.parse(storedCurrencies));
+      setCoins(JSON.parse(storedCurrencies));
     }
-  }, [currenciesAfterDelete]);
+  };
 
   useEffect(() => {
-    const portfolioValue = calculatePortfolioValue(currencies);
-    setPortfolioValue(portfolioValue);
-    const totalsLocalStorage = calculateCurrencyTotalsLocalStorage(currencies);
-    setCurrencyLocalStorage(totalsLocalStorage);
-  }, [currencies]);
+    const portfolioTotal = calculatePortfolioTotal(coins);
+    setPortfolioTotal(portfolioTotal);
+    const groupedCouns = groupCoinsById(coins);
+    setGroupedCoins(groupedCouns);
+  }, [coins]);
 
-  useEffect(() => {
-    getApiPortfolioValue(currencyLocalStorage);
-    console.log(currencyLocalStorage);
-  }, [currencyLocalStorage]);
+  const groupCoinsById = (coins: LocalStorageCoin[]): CoinTotal[] => {
+    const result: CoinTotal[] = [];
 
-  const calculateCurrencyTotalsLocalStorage = (
-    currencies: LocalStorageCoin[]
-  ) => {
-    const totals: Totals[] = [];
+    coins.forEach((coin: LocalStorageCoin) => {
+      const coinResult = result.find((coinResult) => coinResult.id === coin.id);
 
-    currencies.forEach((item: LocalStorageCoin) => {
-      const existingAssetSummary = totals.find(
-        (summary) => summary.id === item.id
-      );
-
-      if (existingAssetSummary) {
-        existingAssetSummary.amount += item.amount;
-        existingAssetSummary.totalPriceUsd +=
-          item.amount * Number(item.priceUsd);
+      if (coinResult) {
+        coinResult.amount += coin.amount;
+        coinResult.totalPriceUsd += coin.amount * Number(coin.priceUsd);
       } else {
-        totals.push({
-          id: item.id,
-          amount: item.amount,
-          symbol: item.symbol,
-          priceUsd: item.priceUsd,
-          name: item.name,
-          totalPriceUsd: item.amount * Number(item.priceUsd),
+        result.push({
+          ...coin,
+          totalPriceUsd: coin.amount * Number(coin.priceUsd),
         });
       }
     });
-    return totals;
+    return result;
   };
 
-  async function getApiPortfolioValue(portfolio: Totals[]) {
-    const result = [];
+  const getApiCoins = async (portfolio: CoinTotal[]) => {
+    const coinIds = portfolio.map((coin) => {
+      return coin.id;
+    });
 
-    for (const coin of portfolio) {
-      const response = await fetch(
-        `https://api.coincap.io/v2/assets/${coin.id}`
-      );
-      const data = await response.json();
-      const priceUsd = data.data.priceUsd;
-      const totalPriceUsd = priceUsd * coin.amount;
+    const response = await fetch(
+      `https://api.coincap.io/v2/assets/?ids=${coinIds.join(",")}`
+    );
+    const data = await response.json();
 
-      result.push({ id: coin.id, amount: coin.amount, totalPriceUsd });
-    }
-    const value = result.reduce((sum, currency) => {
-      return sum + Number(currency.totalPriceUsd);
+    return data;
+  };
+
+  const calculateApiPortfolioTotal = (coins: CoinTotal[], apiCoins: Coin[]) => {
+    return apiCoins.reduce((sum, apiCoin) => {
+      const coin = coins.find((coin) => {
+        return coin.id === apiCoin.id;
+      }) as CoinTotal;
+
+      return sum + coin.amount * Number(apiCoin.priceUsd);
     }, 0);
-    setApiPortfolioValue(value);
-  }
+  };
+
   useEffect(() => {
-    const getPortfolioChange = () => {
-      const result = (portfolioValue - apiPortfolioValue) / portfolioValue;
-      setPortfolioChange(result);
+    const getApiTotal = async () => {
+      if (groupedCoins?.length) {
+        const apiCoins = await getApiCoins(groupedCoins);
+
+        const apiPortfolioTotal = calculateApiPortfolioTotal(
+          groupedCoins,
+          apiCoins.data
+        );
+        setApiPortfolioTotal(apiPortfolioTotal);
+      }
     };
-    getPortfolioChange();
-  }, [portfolioValue, apiPortfolioValue]);
+    getApiTotal();
+  }, [groupedCoins]);
+
+  const portfolioChange = useMemo(() => {
+    if (!portfolioTotal || !apiPortfolioTotal) return 0;
+    return 100 - (portfolioTotal / apiPortfolioTotal) * 100;
+  }, [portfolioTotal, apiPortfolioTotal]);
 
   const onDelete = (priceUsd: string) => {
     onDeleteCoin(priceUsd);
@@ -110,7 +111,7 @@ const Portfolio: React.FC = () => {
       );
 
       localStorage.setItem("portfolio", JSON.stringify(newPortfolio));
-      setCurrenciesAfterDelete(newPortfolio);
+      setCoins(newPortfolio);
     }
   };
 
@@ -118,18 +119,23 @@ const Portfolio: React.FC = () => {
 
   return (
     <div className={s.portfolio}>
-      <p className={s.value}>
-        SUM {portfolioValue.toFixed(2)} USD
+      <div className={s.value}>
+        SUM {portfolioTotal.toFixed(2)} USD
         <p className={`${s.value} ${s[valueClass]}`}>
           {portfolioChange.toFixed(5)}% {portfolioChange > 0 ? "↑" : "↓"}
         </p>
-      </p>
-
-      <ul className={s.list}>
-        {currencies.map((currency, index) => (
-          <Currency currency={currency} onDelete={onDelete} />
-        ))}
-      </ul>
+      </div>
+      <table className={s.list}>
+        <tbody>
+          {coins.map((currency, index) => (
+            <Currency
+              key={currency.id + index}
+              currency={currency}
+              onDelete={onDelete}
+            />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
